@@ -787,6 +787,10 @@ function Window:AddButton(config)
     local callback = config.Callback or function() end
     local disabled = config.Disabled or false
     
+    function Window:AddButton(config)
+    local tab = self._tab or self.CurrentTab
+    if not tab then return end
+    local theme = self._window and self._window.CurrentTheme or self.CurrentTheme
     local buttonFrame = Utils.CreateRoundedFrame(tab.Content, 10)
     buttonFrame.Name = "Button_" .. text
     buttonFrame.Size = UDim2.new(1, 0, 0, 46)
@@ -794,19 +798,19 @@ function Window:AddButton(config)
     buttonFrame.ClipsDescendants = true
     
     if buttonType == "primary" then
-        buttonFrame.BackgroundColor3 = self.CurrentTheme.accent
+        buttonFrame.BackgroundColor3 = theme.accent
         Utils.CreateGradient(buttonFrame, self.CurrentTheme.accent, self.CurrentTheme.accentHover, 45)
     elseif buttonType == "secondary" then
-        buttonFrame.BackgroundColor3 = self.CurrentTheme.cardBackground
+        buttonFrame.BackgroundColor3 = theme.accent
         local stroke = Instance.new("UIStroke")
         stroke.Color = self.CurrentTheme.accent
         stroke.Thickness = 1.5
         stroke.Transparency = 0.3
         stroke.Parent = buttonFrame
     elseif buttonType == "success" then
-        buttonFrame.BackgroundColor3 = self.CurrentTheme.success
+        buttonFrame.BackgroundColor3 = theme.accent
     elseif buttonType == "danger" then
-        buttonFrame.BackgroundColor3 = self.CurrentTheme.error
+        buttonFrame.BackgroundColor3 = theme.accent
     else
         buttonFrame.BackgroundTransparency = 1
     end
