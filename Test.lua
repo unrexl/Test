@@ -617,7 +617,8 @@ function Window:CreateContentArea()
     self.ContentArea.Name = "ContentArea"
     self.ContentArea.Size = UDim2.new(1, -220, 1, -72)
     self.ContentArea.Position = UDim2.new(0, 210, 0, 62)
-    self.ContentArea.BackgroundTransparency = 1
+    self.ContentArea.BackgroundColor3 = self.CurrentTheme.windowBackground
+    self.ContentArea.BackgroundTransparency = 0
     self.ContentArea.ZIndex = 3
     self.ContentArea.ClipsDescendants = true
     
