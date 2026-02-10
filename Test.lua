@@ -780,6 +780,7 @@ end
 function Window:AddButton(config)
     local tab = self._tab or self.CurrentTab
     if not tab then return end
+    local theme = self._window and self._window.CurrentTheme or self.CurrentTheme
     
     local buttonType = config.Type or "primary"
     local text = config.Text or "Button"
@@ -787,10 +788,6 @@ function Window:AddButton(config)
     local callback = config.Callback or function() end
     local disabled = config.Disabled or false
     
-    function Window:AddButton(config)
-    local tab = self._tab or self.CurrentTab
-    if not tab then return end
-    local theme = self._window and self._window.CurrentTheme or self.CurrentTheme
     local buttonFrame = Utils.CreateRoundedFrame(tab.Content, 10)
     buttonFrame.Name = "Button_" .. text
     buttonFrame.Size = UDim2.new(1, 0, 0, 46)
@@ -799,18 +796,18 @@ function Window:AddButton(config)
     
     if buttonType == "primary" then
         buttonFrame.BackgroundColor3 = theme.accent
-        Utils.CreateGradient(buttonFrame, self.CurrentTheme.accent, self.CurrentTheme.accentHover, 45)
+        Utils.CreateGradient(buttonFrame, theme.accent, theme.accentHover, 45)
     elseif buttonType == "secondary" then
-        buttonFrame.BackgroundColor3 = theme.accent
+        buttonFrame.BackgroundColor3 = theme.cardBackground
         local stroke = Instance.new("UIStroke")
-        stroke.Color = self.CurrentTheme.accent
+        stroke.Color = theme.accent
         stroke.Thickness = 1.5
         stroke.Transparency = 0.3
         stroke.Parent = buttonFrame
     elseif buttonType == "success" then
-        buttonFrame.BackgroundColor3 = theme.accent
+        buttonFrame.BackgroundColor3 = theme.success
     elseif buttonType == "danger" then
-        buttonFrame.BackgroundColor3 = theme.accent
+        buttonFrame.BackgroundColor3 = theme.error
     else
         buttonFrame.BackgroundTransparency = 1
     end
@@ -818,6 +815,79 @@ function Window:AddButton(config)
     if disabled then
         buttonFrame.BackgroundTransparency = 0.5
     end
+    
+    local button = Instance.new("TextButton")
+    button.Name = "Button"
+    button.Size = UDim2.new(1, 0, 1, 0)
+    button.BackgroundTransparency = 1
+    button.Text = icon and "" or text
+    button.TextSize = 15
+    button.Font = Enum.Font.GothamMedium
+    button.AutoButtonColor = false
+    button.ZIndex = 7
+    button.Parent = buttonFrame
+    
+    if buttonType == "primary" or buttonType == "success" or buttonType == "danger" then
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    else
+        button.TextColor3 = theme.accent
+    end
+    
+    if icon then
+        local iconLabel = Instance.new("TextLabel")
+        iconLabel.Size = UDim2.new(0, 20, 1, 0)
+        iconLabel.Position = UDim2.new(0, 16, 0, 0)
+        iconLabel.BackgroundTransparency = 1
+        iconLabel.Text = icon
+        iconLabel.TextColor3 = button.TextColor3
+        iconLabel.TextSize = 18
+        iconLabel.Font = Enum.Font.Gotham
+        iconLabel.ZIndex = 8
+        iconLabel.Parent = buttonFrame
+        
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, -52, 1, 0)
+        textLabel.Position = UDim2.new(0, 42, 0, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.Text = text
+        textLabel.TextColor3 = button.TextColor3
+        textLabel.TextSize = 15
+        textLabel.Font = Enum.Font.GothamMedium
+        textLabel.TextXAlignment = Enum.TextXAlignment.Left
+        textLabel.ZIndex = 8
+        textLabel.Parent = buttonFrame
+    end
+    
+    if not disabled then
+        button.MouseButton1Click:Connect(function()
+            Utils.RippleEffect(buttonFrame, Color3.fromRGB(255, 255, 255))
+            Utils.Spring(buttonFrame, {Size = UDim2.new(1, 0, 0, 44)})
+            task.wait(0.1)
+            Utils.Spring(buttonFrame, {Size = UDim2.new(1, 0, 0, 46)})
+            callback()
+        end)
+        
+        button.MouseEnter:Connect(function()
+            if buttonType == "primary" then
+                Utils.Tween(buttonFrame, {BackgroundColor3 = theme.accentHover}, 0.25, Enum.EasingStyle.Quint)
+            elseif buttonType == "tertiary" then
+                Utils.Tween(buttonFrame, {BackgroundTransparency = 0.9}, 0.25, Enum.EasingStyle.Quint)
+                buttonFrame.BackgroundColor3 = theme.elementBackground
+            end
+        end)
+        
+        button.MouseLeave:Connect(function()
+            if buttonType == "primary" then
+                Utils.Tween(buttonFrame, {BackgroundColor3 = theme.accent}, 0.25, Enum.EasingStyle.Quint)
+            elseif buttonType == "tertiary" then
+                Utils.Tween(buttonFrame, {BackgroundTransparency = 1}, 0.25, Enum.EasingStyle.Quint)
+            end
+        end)
+    end
+    
+    table.insert(tab.Elements, buttonFrame)
+    return buttonFrame
+end
     
     local button = Instance.new("TextButton")
     button.Name = "Button"
