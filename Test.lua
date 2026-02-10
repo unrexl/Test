@@ -109,7 +109,7 @@ end
 function Utils.CreateRoundedFrame(parent, radius)
     radius = radius or 8
     local frame = Instance.new("Frame")
-    frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    frame.BackgroundColor3 = Color3.fromRGB(28, 28, 30)
     frame.BorderSizePixel = 0
     frame.Parent = parent
     local corner = Instance.new("UICorner")
