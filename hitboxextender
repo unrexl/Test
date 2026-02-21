@@ -1,0 +1,109 @@
+local TweenService = game:GetService("TweenService")
+local PlayerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+
+-- Main Container
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "DeluxeLoader"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = PlayerGui
+
+-- Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 350, 0, 200)
+mainFrame.Position = UDim2.new(0.5, -175, 0.5, -100)
+mainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12) -- Slightly deeper black
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 15)
+uiCorner.Parent = mainFrame
+
+-- Loading Text (The phrases)
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(1, 0, 0, 40)
+statusLabel.Position = UDim2.new(0, 0, 0.35, 0)
+statusLabel.BackgroundTransparency = 1
+statusLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+statusLabel.Font = Enum.Font.GothamMedium
+statusLabel.TextSize = 16
+statusLabel.Text = "Initializing..."
+statusLabel.Parent = mainFrame
+
+-- Loading Bar Background
+local barBg = Instance.new("Frame")
+barBg.Size = UDim2.new(0.8, 0, 0, 4)
+barBg.Position = UDim2.new(0.1, 0, 0.6, 0)
+barBg.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+barBg.BorderSizePixel = 0
+barBg.Parent = mainFrame
+
+local barCorner = Instance.new("UICorner")
+barCorner.CornerRadius = UDim.new(1, 0)
+barCorner.Parent = barBg
+
+-- The actual Progress Fill
+local barFill = Instance.new("Frame")
+barFill.Size = UDim2.new(0, 0, 1, 0)
+barFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+barFill.BorderSizePixel = 0
+barFill.Parent = barBg
+
+local fillCorner = Instance.new("UICorner")
+fillCorner.CornerRadius = UDim.new(1, 0)
+fillCorner.Parent = barFill
+
+--- LOADING LOGIC ---
+local phrases = {
+    {text = "Choking kittens...", progress = 0.25},
+    {text = "Popping balloons...", progress = 0.50},
+    {text = "Destroying Earth...", progress = 0.75},
+    {text = "Sniping monkeys...", progress = 1.0}
+}
+
+for _, phase in ipairs(phrases) do
+    statusLabel.Text = phase.text
+    local tween = TweenService:Create(barFill, TweenInfo.new(1, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(phase.progress, 0, 1, 0)})
+    tween:Play()
+    task.wait(1)
+end
+
+--- TRANSITION TO FINAL UI ---
+statusLabel:Destroy()
+barBg:Destroy()
+
+-- ENHANCED GRAMMAR MESSAGE
+local finalTitle = Instance.new("TextLabel")
+finalTitle.Size = UDim2.new(0.9, 0, 0.4, 0)
+finalTitle.Position = UDim2.new(0.05, 0, 0.1, 0)
+finalTitle.BackgroundTransparency = 1
+-- Fixed "Purshase" to "Purchase" and added better punctuation
+finalTitle.Text = "This script is exclusive to DELUXE users. Please purchase access via the Discord link below."
+finalTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+finalTitle.Font = Enum.Font.GothamBold
+finalTitle.TextSize = 14
+finalTitle.TextWrapped = true
+finalTitle.Parent = mainFrame
+
+-- Discord Button
+local discordBtn = Instance.new("TextButton")
+discordBtn.Size = UDim2.new(0.7, 0, 0.22, 0)
+discordBtn.Position = UDim2.new(0.15, 0, 0.65, 0)
+discordBtn.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
+discordBtn.Text = "Join Discord"
+discordBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+discordBtn.Font = Enum.Font.GothamBold
+discordBtn.TextSize = 14
+discordBtn.AutoButtonColor = true
+discordBtn.Parent = mainFrame
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 6)
+btnCorner.Parent = discordBtn
+
+discordBtn.MouseButton1Click:Connect(function()
+    setclipboard("https://discord.gg/8K3xrYVAnJ")
+    discordBtn.Text = "Link Copied to Clipboard!"
+    task.wait(2)
+    discordBtn.Text = "Join Discord"
+end)
